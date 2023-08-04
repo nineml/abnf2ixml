@@ -4,6 +4,9 @@ This repository contains a small set of tools to parse
 [ABNF grammars](https://www.rfc-editor.org/rfc/rfc5234)
 from IETF specifications and convert them to
 [Invisible XML](https://invisiblexml.org/).
+I originally described this project with
+a [short presentation](https://nineml.github.io/abnf2ixml/) during the “open mic” session at
+[Balisage](https://balisage.net/) 2023.
 
 The `build.gradle` script automates a few examples, try:
 
