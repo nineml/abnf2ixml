@@ -1,0 +1,4 @@
+mark rule unreserved with "-"
+mark rule pchar with “-”
+mark token //char-val[. = ('/', ':', '//')] with “-”
+mark token /rulelist/rule[rulename = 'URI']//char-val with ‘-’

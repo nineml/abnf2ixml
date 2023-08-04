@@ -1,0 +1,257 @@
+<article xmlns="http://docbook.org/ns/docbook"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi='http://www.w3.org/2001/XInclude'
+         xmlns:h="http://www.w3.org/1999/xhtml" 
+         version="5.2">
+<info>
+<title>Grammar! Grammar! Grammar! Grammar!</title>
+<subtitle>Mushroom! Mushroom!</subtitle>
+<h:style>
+  .mediaobject { text-align: center; }
+  .horizam { width: 100%; }
+  .reallybig { font-size: 400pt; margin: 0; text-align: center; margin-top: -100pt; }
+  .list-of-titles { padding-top: 300pt; }
+  h1 { padding-top: 1in; }
+  .author h4 { margin-top: 1rem; }
+  .confgroup { margin-top: 2rem; }
+  .questions { font-size: 80pt; text-align: center; margin-top: 0; }
+  .bibliolist { margin-left: 10%; margin-right: 10%; font-size: 80% }
+  .center { text-align: center; }
+  pre[class*="language-"] { margin: 0; padding: 0; }
+</h:style>
+</info>
+
+<section xml:id="ietf">
+<title>Internet Engineering Task Force</title>
+<itemizedlist>
+<listitem>
+<para>The IETF defines web standards</para>
+</listitem>
+<listitem role="reveal">
+<para>Some of those standards contain grammars</para>
+</listitem>
+</itemizedlist>
+</section>
+
+<section xml:id="rfc3986">
+<title>Grammar!</title>
+<itemizedlist>
+<listitem>
+<para>For example, Uniform Resource Identifiers (URIs) are defined by RFC 3986</para>
+</listitem>
+<listitem>
+<para>RFC 3986 contains a grammar for parsing URIs</para>
+</listitem>
+<listitem role="reveal">
+<para>Unfortunately, <filename>uri.abnf</filename> is not an iXML grammar</para>
+<programlisting language="abnf"
+><xi:include href="../src/main/abnf/uri.abnf" parse="text"/></programlisting>
+</listitem>
+</itemizedlist>
+</section>
+
+<section xml:id="abnf">
+<title>Grammar! Grammar!</title>
+<itemizedlist>
+<listitem>
+<para>Grammars in IETF specifications are defined with Augmented BNF (ABNF)</para>
+</listitem>
+<listitem>
+<para>RFC 5234 contains a grammar for ABNF</para>
+</listitem>
+<listitem role="reveal">
+<para>Unfortunately, <filename>abnf.abnf</filename> it is also not an iXML grammar</para>
+<programlisting language="abnf"
+><xi:include href="../src/main/abnf/abnf.abnf" parse="text"/></programlisting>
+</listitem>
+</itemizedlist>
+</section>
+
+<section xml:id="abnf.ixml">
+<title>Grammar! Grammar! Grammar!</title>
+<itemizedlist>
+<listitem>
+<para>Michael Sperberg-McQueen wrote an iXML grammar for ABNF</para>
+</listitem>
+<listitem role="reveal">
+<para>It <emphasis>is</emphasis> an iXML grammar!</para>
+<programlisting language="ixml"
+><xi:include href="../src/main/ixml/ABNF.ixml" parse="text"/></programlisting>
+</listitem>
+</itemizedlist>
+</section>
+
+<section xml:id="uri-raw.xml">
+<title>An XML version of uri.abnf</title>
+<itemizedlist>
+<listitem>
+<para>Now we can parse <filename>uri.abnf</filename> into XML</para>
+</listitem>
+<listitem role="reveal">
+<para>Unfortunately, <emphasis>it</emphasis> is not an iXML grammar</para>
+<para>And it’s a little bit verbose</para>
+<programlisting language="xml"
+><xi:include href="../build/uri-raw.xml" parse="text"/></programlisting>
+</listitem>
+</itemizedlist>
+</section>
+
+<section xml:id="uri.xml">
+<title>Another XML version of uri.abnf</title>
+<itemizedlist>
+<listitem>
+<para>By adding a few marks to <filename>abnf.ixml</filename>, we can make the result less verbose</para>
+</listitem>
+<listitem role="reveal">
+<para>But it’s <emphasis>still</emphasis> not an iXML grammar</para>
+<programlisting language="xml"
+><xi:include href="../build/uri.xml" parse="text"/></programlisting>
+</listitem>
+</itemizedlist>
+</section>
+
+<section xml:id="xslt">
+<title>XSLT enters the chat</title>
+<itemizedlist>
+<listitem>
+<para>We have the technology to fix that!</para>
+<programlisting language="xml"
+><xi:include href="../src/main/xslt/abnf2ixml.xsl" parse="text"/></programlisting>
+</listitem>
+</itemizedlist>
+</section>
+
+<section xml:id="uri-raw.ixml">
+<title>Grammar! Grammar! Grammar! Grammar!</title>
+<para>Now we can…</para>
+<itemizedlist>
+<listitem>
+<para>Convert <code>uri.abnf</code> to xml…</para>
+<para><code>coffeepot -g:ABNFp.ixml -i:uri.abnf -o:uri.xml</code>
+</para>
+</listitem>
+<listitem role="reveal">
+<para>Transform that XML…</para>
+<para><code>saxon -s:uri.xml -xsl:abnf2ixml.xsl -o:uri-raw.vxml</code>
+</para>
+</listitem>
+<listitem role="reveal">
+<para>And <emphasis>now</emphasis> it’s iXML!</para>
+<programlisting language="xml"
+><xi:include href="../build/uri-raw.vxml" parse="text"/></programlisting>
+</listitem>
+</itemizedlist>
+</section>
+
+<section xml:id="mushroom1">
+<title>I can haz URI!</title>
+<itemizedlist>
+<listitem>
+<para>Now I can parse a URI <emphasis>with the grammar</emphasis> from RFC 3986:</para>
+<para><code>coffeepot -g:uri-raw.vxml "https://mushroom.mushroom/?notareal#tld"</code></para>
+</listitem>
+<listitem role="reveal">
+<para>XML!</para>
+<programlisting language="xml"
+><xi:include href="../build/mushroom-raw.xml" parse="text"/></programlisting>
+</listitem>
+</itemizedlist>
+</section>
+
+<section xml:id="marks">
+<title>Marks</title>
+<itemizedlist>
+<listitem>
+<para>I could improve the output with marks…</para>
+</listitem>
+<listitem role="reveal transitory">
+<para>I could edit the VXML file…</para>
+</listitem>
+<listitem role="reveal">
+<para>I could edit the VXML file, but that would be wrong.</para>
+</listitem>
+<listitem role="reveal">
+<para>What if I could describe <emphasis>where</emphasis> I wanted the marks to go?</para>
+</listitem>
+<listitem role="reveal">
+<para>In a declarative way:</para>
+<programlisting language="xml"
+><xi:include href="../src/main/marks/uri.txt" parse="text"/></programlisting>
+</listitem>
+</itemizedlist>
+</section>
+
+<section xml:id="marks.ixml">
+<title>Marks, in XML</title>
+<itemizedlist>
+<listitem>
+<para>That marks file sure would be easier to process if it was in XML though…</para>
+</listitem>
+<listitem role="reveal">
+<para>CoffeeSacks (iXML extension functions for Saxon) to the rescue</para>
+<programlisting language="xml"><![CDATA[<xsl:param name="marks" select="()"/>
+
+<xsl:variable name="parser" select="cs:load-grammar('marks.ixml')"/>
+
+<xsl:variable name="marklist" as="element(marks)?"
+              select="$marks ! $parser(unparsed-text(.))/*"/>]]></programlisting>
+</listitem>
+<listitem role="reveal">
+<para>With this little grammar grammar grammar grammar grammar.</para>
+<programlisting language="ixml"
+><xi:include href="../src/main/xslt/marks.ixml" parse="text"/></programlisting>
+</listitem>
+</itemizedlist>
+</section>
+
+<section xml:id="parsing-uris">
+<title>Mushroom! Mushroom!</title>
+<para>Ready! Set! Go!</para>
+<itemizedlist>
+<listitem role="reveal">
+<para><code>coffeepot -g:ABNFp.ixml -i:uri.abnf -o:uri.xml</code>
+</para>
+</listitem>
+<listitem role="reveal">
+<para><code>saxon -s:uri.xml -xsl:abnf2ixml.xsl -o:uri.vxml marks=uri-marks.txt</code>
+</para>
+</listitem>
+<listitem role="reveal">
+<para><code>coffeepot -g:uri.vxml "https://mushroom.mushroom/?notareal#tld"</code></para>
+</listitem>
+<listitem role="reveal">
+<para>Tada!</para>
+<programlisting language="xml"
+><xi:include href="../build/mushroom.xml" parse="text"/></programlisting>
+</listitem>
+</itemizedlist>
+</section>
+
+<!--
+<section xml:id="badger">
+<title>Badger, badger, badger…</title>
+<mediaobject>
+<videoobject>
+<videodata fileref="video/Badgers.mp4">
+  <multimediaparam name="frameborder" value="0"/>
+  <multimediaparam name="allow"
+                   value="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"/>
+  <multimediaparam name="allowfullscreen" value="allowfullscreen"/>
+  <multimediaparam name="controls" value="controls"/>
+</videodata>
+</videoobject>
+</mediaobject>
+</section>
+-->
+
+<section xml:id="gif">
+<title></title>
+<mediaobject>
+<alt>An animated gif</alt>
+<imageobject>
+<imagedata fileref="images/grammar-mushroom.gif"/>
+</imageobject>
+</mediaobject>
+</section>
+
+</article>

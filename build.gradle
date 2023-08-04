@@ -1,0 +1,251 @@
+buildscript {
+  repositories {
+    mavenLocal()
+    mavenCentral()
+    maven {
+      url "https://dev.saxonica.com/maven"
+    }
+  }
+
+  dependencies {
+    classpath group: 'org.docbook', name: 'schemas-docbook', version: '5.2CR5'
+    classpath group: "com.saxonica", name: "Saxon-EE", version: saxonVersion
+    classpath group: 'org.docbook', name: 'docbook-xslTNG', version: xslTNGversion
+  }
+}
+
+plugins {
+  id "java"
+  id 'com.nwalsh.gradle.saxon.saxon-gradle' version '0.10.7'
+  id 'com.nwalsh.gradle.relaxng.validate' version '0.10.5'
+}
+
+import com.nwalsh.gradle.saxon.SaxonXsltTask
+import com.nwalsh.gradle.relaxng.validate.RelaxNGValidateTask
+
+repositories {
+  mavenLocal()
+  mavenCentral()
+  maven {
+    url "https://dev.saxonica.com/maven"
+  }
+}
+
+configurations.all {
+  resolutionStrategy {
+    force 'xml-apis:xml-apis:1.4.01'
+  }
+}
+
+configurations {
+  transform.extendsFrom implementation
+}
+
+ext {
+  saxonLicenseDir = "/Users/ndw/java/saxon-license.lic"
+  imgfmt = 'png'
+}
+
+dependencies {
+  implementation (
+    [group: "com.saxonica", name: "Saxon-EE", version: saxonVersion],
+    [group: 'org.docbook', name: 'docbook-xslTNG', version: xslTNGversion],
+    [group: 'org.nineml', name: 'coffeesacks', version: '3.2.0'],
+    [group: 'org.nineml', name: 'coffeepot', version: '3.2.0']
+  )
+}
+
+task abnf_to_xml() {
+  doLast {
+    println("Generated XML from ABNF")
+  }
+}
+
+fileTree(dir: "${projectDir}/src/main/abnf", include: '*.abnf').each { abnf ->
+  String fn = abnf.toString().replace('\\', '/')
+  int pos = fn.lastIndexOf('/')
+  fn = fn.substring(pos+1, fn.length() - 5)
+  tasks.register("${fn}_abnf", JavaExec) {
+    inputs.file abnf
+    inputs.file "${projectDir}/src/main/ixml/ABNFp.ixml"
+    outputs.file "${buildDir}/${fn}.xml"
+
+    classpath = configurations.transform
+    mainClass = 'org.nineml.coffeepot.Main'
+    args(["-g:${projectDir}/src/main/ixml/ABNFp.ixml",
+          "-i:${abnf}",
+          "-o:${buildDir}/${fn}.xml",
+          "--pretty-print"])
+  }
+  abnf_to_xml.dependsOn tasks.getByPath(":${fn}_abnf")
+
+  tasks.register("${fn}_vxml", SaxonXsltTask) {
+    dependsOn "${fn}_abnf"
+
+    classpath configurations.transform
+    args(['-init:org.nineml.coffeesacks.RegisterCoffeeSacks'])
+    input "${buildDir}/${fn}.xml"
+    stylesheet "${projectDir}/src/main/xslt/abnf2ixml.xsl"
+    output "${buildDir}/${fn}.vxml"
+    if (file("${projectDir}/src/main/marks/${fn}.txt").exists()) {
+      inputs.file "${projectDir}/src/main/marks/${fn}.txt"
+      parameters(
+        ["marks": "${projectDir}/src/main/marks/${fn}.txt"]
+      )
+    }
+  }
+
+  if (file("${projectDir}/src/test/resources/data.${fn}").exists()) {
+    tasks.register("parse_${fn}", JavaExec) {
+      dependsOn "${fn}_vxml"
+      classpath = configurations.transform
+      mainClass = 'org.nineml.coffeepot.Main'
+      args(["-g:${buildDir}/${fn}.vxml",
+            "-i:${projectDir}/src/test/resources/data.${fn}",
+            "--pretty-print", "--trim"])
+    }
+  }
+}
+
+// ============================================================
+
+task validate_presentation(
+  type: RelaxNGValidateTask
+) {
+  input "${projectDir}/src/presentation/xml/presentation.xml"
+  schema "${projectDir}/src/presentation/schema/docbook.rng"
+  output "${buildDir}/presentation.xml"
+}
+
+task presentation(
+  type: SaxonXsltTask,
+  dependsOn: ["validate_presentation", "xsltngResources", "abnf_to_xml",
+              "uri_raw_xml", "uri_raw_vxml", "mushroom_raw_xml", "mushroom_xml"]
+) {
+  inputs.files fileTree(dir: "${projectDir}/src/presentation")
+  inputs.file validate_presentation.outputs.files.getSingleFile()
+  outputs.file("${buildDir}/presentation/index.html")
+
+  doFirst {
+    copy {
+      from "src/presentation/resources/images"
+      into "build/images"
+    }
+  }
+
+  args(['-init:org.docbook.xsltng.extensions.Register'])
+  input validate_presentation.outputs.files.getSingleFile()
+  stylesheet "${projectDir}/src/presentation/xslt/presentation.xsl"
+  output "${buildDir}/presentation/index.html"
+  parameters(
+  )
+}
+
+tasks.register("uri_raw_xml", JavaExec) {
+  inputs.file "${projectDir}/src/main/abnf/uri.abnf"
+  inputs.file "${projectDir}/src/main/ixml/ABNF.ixml"
+  outputs.file "${buildDir}/uri-raw.xml"
+
+  classpath = configurations.transform
+  mainClass = 'org.nineml.coffeepot.Main'
+  args(["-g:${projectDir}/src/main/ixml/ABNF.ixml",
+        "-i:${projectDir}/src/main/abnf/uri.abnf",
+        "-o:${buildDir}/uri-raw.xml",
+        "--pretty-print"])
+}
+
+tasks.register("uri_raw_vxml", SaxonXsltTask) {
+  dependsOn "abnf_to_xml", "uri_raw_xml"
+
+  classpath configurations.transform
+  args(['-init:org.nineml.coffeesacks.RegisterCoffeeSacks'])
+  input "${buildDir}/uri.xml"
+  stylesheet "${projectDir}/src/main/xslt/abnf2ixml.xsl"
+  output "${buildDir}/uri-raw.vxml"
+}
+
+tasks.register("mushroom_raw_xml", JavaExec) {
+  inputs.file "${buildDir}/uri-raw.vxml"
+  outputs.file "${buildDir}/mushroom-raw.xml"
+  dependsOn "uri_raw_vxml"
+
+  classpath = configurations.transform
+  mainClass = 'org.nineml.coffeepot.Main'
+  args(["-g:${buildDir}/uri-raw.vxml",
+        "-o:${buildDir}/mushroom-raw.xml",
+        "--pretty-print",
+        "https://mushroom.mushroom/?notareal#tld"])
+}
+
+tasks.register("mushroom_xml", JavaExec) {
+  inputs.file "${buildDir}/uri.vxml"
+  outputs.file "${buildDir}/mushroom.xml"
+  dependsOn "uri_vxml"
+
+  classpath = configurations.transform
+  mainClass = 'org.nineml.coffeepot.Main'
+  args(["-g:${buildDir}/uri.vxml",
+        "-o:${buildDir}/mushroom.xml",
+        "--pretty-print",
+        "https://mushroom.mushroom/?notareal#tld"])
+}
+
+task xsltngResources(dependsOn: ["xsltngJarResources", "xsltngStaticResources"]) {
+  // nop
+}
+
+task xsltngJarResources(
+) {
+  outputs.files fileTree(dir: "${buildDir}/presentation")
+
+  def dbjar = null
+  configurations.transform.each { path ->
+    if (path.toString().contains("docbook-xslTNG")) {
+      dbjar = path
+    }
+  }
+
+  doLast {
+    if (dbjar == null) {
+      throw new GradleException("Failed to locate DocBook xslTNG jar file")
+    }
+    copy {
+      into "${buildDir}/presentation"
+      from ({ zipTree(dbjar.toString()) }) {
+        include "org/docbook/xsltng/resources/**"
+      }
+      eachFile { fileCopyDetails ->
+        def originalPath = fileCopyDetails.path
+        fileCopyDetails.path = originalPath.replace('org/docbook/xsltng/resources/', '')
+      }
+    }
+  }
+
+  doLast {
+    delete "${buildDir}/presentation/org"
+  }
+}
+
+task xsltngStaticResources(
+) {
+  doLast {
+    copy {
+      from "${projectDir}/src/presentation/resources/css"
+      into "${buildDir}/presentation/css"
+    }
+  }
+  doLast {
+    copy {
+      from "${projectDir}/src/presentation/resources/images"
+      into "${buildDir}/presentation/images"
+    }
+  }
+}
+
+// ============================================================
+
+task helloWorld() {
+  doLast {
+    println("Hello, world.")
+  }
+}

@@ -1,0 +1,29 @@
+mark rule char with "-"
+mark rule unescaped with “-”
+mark rule quotation-mark with “-”
+mark rule ws with “-”
+mark rule end-object with “-”
+mark rule begin-object with “-”
+mark rule end-array with “-”
+mark rule begin-array with “-”
+mark rule value-separator with “-”
+mark rule name-separator with “-”
+mark rule digit1-9 with “-”
+mark rule ws with “-”
+mark rule value with “-”
+mark rule int with “-”
+mark rule frac with “-”
+mark rule decimal-point with “-”
+mark token /rulelist/rule[rulename = 'quotation-mark']//hex-val with ‘-’
+mark token /rulelist/rule[rulename = 'ws']//hex-val with ‘-’
+mark token /rulelist/rule[rulename = 'end-object']//hex-val with ‘-’
+mark token /rulelist/rule[rulename = 'begin-object']//hex-val with ‘-’
+mark token /rulelist/rule[rulename = 'end-array']//hex-val with ‘-’
+mark token /rulelist/rule[rulename = 'begin-array']//hex-val with ‘-’
+mark token /rulelist/rule[rulename = 'value-separator']//hex-val with ‘-’
+mark token /rulelist/rule[rulename = 'name-separator']//hex-val with ‘-’
+mark token /rulelist/rule[rulename = 'member']//rulename[.='string'] with ‘@’
+mark token /rulelist/rule[rulename = 'false']//hex-val with ‘-’
+mark token /rulelist/rule[rulename = 'true']//hex-val with ‘-’
+mark token /rulelist/rule[rulename = 'null']//hex-val with ‘-’
+rename token /rulelist/rule[rulename = 'member']//rulename[.='string'] to name

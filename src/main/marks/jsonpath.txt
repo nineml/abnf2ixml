@@ -1,0 +1,10 @@
+mark rule name-first with "-"
+mark rule name-char with “-”
+mark rule ALPHA with “-”
+mark rule S with “-”
+mark rule B with “-”
+mark token /rulelist/rule[rulename = 'B']//hex-val with ‘-’
+mark token /rulelist/rule[rulename = 'bracketed-selection']//char-val[.='[' or .=']'] with ‘-’
+mark token /rulelist/rule[rulename = 'index-segment']//char-val[.='[' or .=']'] with ‘-’
+mark token /rulelist/rule[rulename = 'name-segment']//char-val[.='[' or .=']' or .='.'] with ‘-’
+mark token /rulelist/rule[rulename = 'child-segment']//char-val[.='.'] with ‘-’
