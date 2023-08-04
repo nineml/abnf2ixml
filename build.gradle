@@ -100,9 +100,15 @@ fileTree(dir: "${projectDir}/src/main/abnf", include: '*.abnf').each { abnf ->
       dependsOn "${fn}_vxml"
       classpath = configurations.transform
       mainClass = 'org.nineml.coffeepot.Main'
-      args(["-g:${buildDir}/${fn}.vxml",
-            "-i:${projectDir}/src/test/resources/data.${fn}",
-            "--pretty-print", "--trim"])
+      if (fn == "abnf") {
+        args(["-g:${buildDir}/${fn}.vxml",
+              "-i:${projectDir}/src/test/resources/data.${fn}",
+              "--pretty-print"])
+      } else {
+        args(["-g:${buildDir}/${fn}.vxml",
+              "-i:${projectDir}/src/test/resources/data.${fn}",
+              "--pretty-print", "--trim"])
+      }
     }
   }
 }
