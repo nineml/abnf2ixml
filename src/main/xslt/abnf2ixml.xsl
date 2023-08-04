@@ -366,9 +366,27 @@
 </xsl:template>
 
 <xsl:template match="char-val">
-  <literal string='{.}'>
-    <xsl:sequence select="f:tmark(.)"/>
-  </literal>
+  <xsl:choose>
+    <xsl:when test="upper-case(.) != lower-case(.)">
+      <alts>
+        <alt>
+          <literal string='{upper-case(.)}'>
+            <xsl:sequence select="f:tmark(.)"/>
+          </literal>
+        </alt>
+        <alt>
+          <literal string='{lower-case(.)}'>
+            <xsl:sequence select="f:tmark(.)"/>
+          </literal>
+        </alt>
+      </alts>
+    </xsl:when>
+    <xsl:otherwise>
+      <literal string='{.}'>
+        <xsl:sequence select="f:tmark(.)"/>
+      </literal>
+    </xsl:otherwise>
+  </xsl:choose>
 </xsl:template>
 
 <xsl:template match="hex-val">
