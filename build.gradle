@@ -196,6 +196,41 @@ tasks.register("mushroom_xml", JavaExec) {
         "https://mushroom.mushroom/?notareal#tld"])
 }
 
+task presentation_pdf_html(
+  type: SaxonXsltTask,
+  dependsOn: ["validate_presentation", "xsltngResources", "abnf_to_xml",
+              "uri_raw_xml", "uri_raw_vxml", "mushroom_raw_xml", "mushroom_xml"]
+) {
+  inputs.files fileTree(dir: "${projectDir}/src/presentation")
+  inputs.file validate_presentation.outputs.files.getSingleFile()
+  outputs.file("${buildDir}/presentation/index.html")
+
+  doFirst {
+    copy {
+      from "src/presentation/resources/images"
+      into "build/images"
+    }
+  }
+
+  args(['-init:org.docbook.xsltng.extensions.Register'])
+  input validate_presentation.outputs.files.getSingleFile()
+  stylesheet "${projectDir}/src/presentation/xslt/print.xsl"
+  output "${buildDir}/presentation/print.html"
+  parameters(
+    'profile-outputformat': 'print',
+  )
+}
+
+task "presentation.pdf"(type: Exec, dependsOn: ["presentation_pdf_html"]) {
+  inputs.file("${buildDir}/presentation/print.html")
+  outputs.file("${buildDir}/presentation/presentation.pdf")
+  commandLine '/usr/local/AHFormatterV73/bin/AHFCmd',
+    "-d", "${buildDir}/presentation/print.html",
+    "-o", "${buildDir}/presentation/presentation.pdf"
+}
+
+// ============================================================
+
 task xsltngResources(dependsOn: ["xsltngJarResources", "xsltngStaticResources"]) {
   // nop
 }

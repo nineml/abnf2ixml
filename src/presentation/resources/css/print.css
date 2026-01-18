@@ -1,0 +1,59 @@
+/* Print overrides */
+
+:root {
+  --symbol-fonts: "Arial Unicode", "Apple Symbols", "Symbol", "Symbola_hint";
+  --body-family: serif, var(--symbol-fonts);
+  --title-family: sans-serif, var(--symbol-fonts);
+  --mono-family: "IBM Plex Mono", monospace, var(--symbol-fonts);
+  font-size: 18pt;
+}
+
+.verbatim {
+    font-family: var(--mono-family);
+}
+
+.transitory {
+    display: none;
+}
+
+html.article-style.A4 {
+    --margin-inner: 1cm;
+    --margin-outer: 1cm;
+    --margin-above: 1cm;
+    --margin-below: 1.5cm;
+}
+
+html.article-style.A4 body .section {
+    break-before: page;
+}
+
+hr.page,
+.pagebreak {
+    break-before: page;
+}
+
+@page A4-article-flow {
+    size: A4 landscape;
+    @top-center {
+        content: "";
+    }
+    @bottom-center {
+        content: counter(page);
+    }
+    @footnote {
+        float: bottom page;
+        border-top: thin solid black;
+        border-length: 30%;
+        padding-top: 0.5em;
+    }
+}
+
+@page A4-article-flow:first {
+    size: A4 landscape;
+    @top-center {
+        content: "";
+    }
+    @bottom-center {
+        content: "";
+    }
+}

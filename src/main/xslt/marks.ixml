@@ -2,13 +2,19 @@ ixml version "1.1-nineml" .
 
             marks = mark**NL, NL? .
             -mark = rule | token | rename .
-             rule = -'mark', s, -'rule', s, name, s, -'with', s, themark, s? .
-            token = -'mark', s, -'token', s, expr, s, -'with', s, themark, s? .
+             rule = -'mark', s, -'rule', s, name,
+                    s, -'with', s, themark, s? .
+            token = -'mark', s, -'token', s, expr,
+                    s, -'with', s, themark, s? .
           -rename = renamerule | renametoken .
 renamerule>rename = -'rename', s, @name, s, -'to', s, name, s? .
-      renametoken = -'rename', s, -'token', s, expr, s, -'to', s, @name, s? .
+      renametoken = -'rename', s, -'token', s, expr,
+                    s, -'to', s, @name, s? .
             -expr = ~[#A]+ .
             -name = [L|N|'-'|'.'|'_']+ .
-    @themark>mark = -'"', [P], -'"' | -"'", [P], -"'" | -'“', [P], -'”' | -"‘", [P], -"’" .
+    @themark>mark = -'"', [P], -'"' |
+                    -"'", [P], -"'" |
+                    -'“', [P], -'”' |
+                    -"‘", [P], -"’" .
                -s = -[#20 | #9]+ .
               -NL = -#D?, -#A .

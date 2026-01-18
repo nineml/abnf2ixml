@@ -4,13 +4,15 @@
          xmlns:h="http://www.w3.org/1999/xhtml" 
          version="5.2">
 <info>
-<title>Grammar! Grammar! Grammar! Grammar!</title>
+<title>Grammar! Grammar! <?br?>Grammar! Grammar!</title>
 <subtitle>Mushroom! Mushroom!</subtitle>
 <h:style>
   .mediaobject { text-align: center; }
   .horizam { width: 100%; }
   .reallybig { font-size: 400pt; margin: 0; text-align: center; margin-top: -100pt; }
+/*
   .list-of-titles { padding-top: 300pt; }
+*/
   h1 { padding-top: 1in; }
   .author h4 { margin-top: 1rem; }
   .confgroup { margin-top: 2rem; }
@@ -45,7 +47,8 @@
 <listitem role="reveal">
 <para>Unfortunately, <filename>uri.abnf</filename> is not an iXML grammar</para>
 <programlisting language="abnf"
-><xi:include href="../src/main/abnf/uri.abnf" parse="text"/></programlisting>
+><xi:include href="../src/main/abnf/uri.abnf" parse="text"
+             fragid="line=0,25"/>…</programlisting>
 </listitem>
 </itemizedlist>
 </section>
@@ -62,7 +65,8 @@
 <listitem role="reveal">
 <para>Unfortunately, <filename>abnf.abnf</filename> it is also not an iXML grammar</para>
 <programlisting language="abnf"
-><xi:include href="../src/main/abnf/abnf.abnf" parse="text"/></programlisting>
+><xi:include href="../src/main/abnf/abnf.abnf" parse="text"
+             fragid="line=0,25"/>…</programlisting>
 </listitem>
 </itemizedlist>
 </section>
@@ -76,7 +80,8 @@
 <listitem role="reveal">
 <para>It <emphasis>is</emphasis> an iXML grammar!</para>
 <programlisting language="ixml"
-><xi:include href="../src/main/ixml/ABNF.ixml" parse="text"/></programlisting>
+><xi:include href="../src/main/ixml/ABNF.ixml" parse="text"
+             fragid="line=0,25"/>…</programlisting>
 </listitem>
 </itemizedlist>
 </section>
@@ -91,7 +96,8 @@
 <para>Unfortunately, <emphasis>it</emphasis> is not an iXML grammar</para>
 <para>And it’s a little bit verbose</para>
 <programlisting language="xml"
-><xi:include href="../build/uri-raw.xml" parse="text"/></programlisting>
+><xi:include href="../build/uri-raw.xml" parse="text"
+             fragid="line=0,25"/>…</programlisting>
 </listitem>
 </itemizedlist>
 </section>
@@ -105,7 +111,8 @@
 <listitem role="reveal">
 <para>But it’s <emphasis>still</emphasis> not an iXML grammar</para>
 <programlisting language="xml"
-><xi:include href="../build/uri.xml" parse="text"/></programlisting>
+><xi:include href="../build/uri.xml" parse="text"
+             fragid="line=0,25"/>…</programlisting>
 </listitem>
 </itemizedlist>
 </section>
@@ -116,7 +123,8 @@
 <listitem>
 <para>We have the technology to fix that!</para>
 <programlisting language="xml"
-><xi:include href="../src/main/xslt/abnf2ixml.xsl" parse="text"/></programlisting>
+><xi:include href="../src/main/xslt/abnf2ixml.xsl" parse="text"
+             fragid="line=0,25"/>…</programlisting>
 </listitem>
 </itemizedlist>
 </section>
@@ -138,7 +146,8 @@
 <listitem role="reveal">
 <para>And <emphasis>now</emphasis> it’s iXML!</para>
 <programlisting language="xml"
-><xi:include href="../build/uri-raw.vxml" parse="text"/></programlisting>
+><xi:include href="../build/uri-raw.vxml" parse="text"
+             fragid="line=0,20"/>…</programlisting>
 </listitem>
 </itemizedlist>
 </section>
@@ -153,7 +162,8 @@
 <listitem role="reveal">
 <para>XML!</para>
 <programlisting language="xml"
-><xi:include href="../build/mushroom-raw.xml" parse="text"/></programlisting>
+><xi:include href="../build/mushroom-raw.xml" parse="text"
+             fragid="line=0,25"/>…</programlisting>
 </listitem>
 </itemizedlist>
 </section>
@@ -196,7 +206,7 @@
 <xsl:variable name="marklist" as="element(marks)?"
               select="$marks ! $parser(unparsed-text(.))/*"/>]]></programlisting>
 </listitem>
-<listitem role="reveal">
+<listitem role="reveal pagebreak">
 <para>With this little grammar grammar grammar grammar grammar.</para>
 <programlisting language="ixml"
 ><xi:include href="../src/main/xslt/marks.ixml" parse="text"/></programlisting>
@@ -244,7 +254,7 @@
 </section>
 -->
 
-<section xml:id="gif">
+<section xml:id="gif" outputformat="online">
 <title></title>
 <mediaobject>
 <alt>An animated gif</alt>
